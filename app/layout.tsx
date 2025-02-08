@@ -1,7 +1,7 @@
 import "./globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
 import { ModeToggle } from "@/components/mode-toggle"
-import type React from "react"
+import type { ReactNode } from "react"
 import localFont from 'next/font/local';
 
 export const metadata = {
@@ -17,7 +17,7 @@ const jetbrainsMono = localFont({
 export default function RootLayout({
   children,
 }: {
-  children: React.ReactNode
+  children: ReactNode
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
