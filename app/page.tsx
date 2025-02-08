@@ -3,12 +3,13 @@
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { Lock } from "lucide-react"
+import type { FormEvent } from "react"
 
 export default function Home() {
   const [password, setPassword] = useState("")
   const router = useRouter()
 
-  const handleUnlock = (e: React.FormEvent) => {
+  const handleUnlock = (e: FormEvent) => {
     e.preventDefault()
     // In a real application, you would validate the password here
     if (password) {

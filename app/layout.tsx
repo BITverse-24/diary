@@ -1,17 +1,18 @@
 import "./globals.css"
-import { Inter, Special_Elite, EB_Garamond } from "next/font/google"
 import { ThemeProvider } from "@/components/theme-provider"
 import { ModeToggle } from "@/components/mode-toggle"
-import type React from "react" // Import React
-
-const inter = Inter({ subsets: ["latin"], variable: "--font-inter" })
-const specialElite = Special_Elite({ weight: "400", subsets: ["latin"], variable: "--font-special-elite" })
-const ebGaramond = EB_Garamond({ subsets: ["latin"], variable: "--font-eb-garamond" })
+import type React from "react"
+import localFont from 'next/font/local';
 
 export const metadata = {
   title: "Personal Diary",
   description: "A nostalgic personal diary web application",
 }
+
+const jetbrainsMono = localFont({
+  src: './fonts/mono.woff2',
+  weight: '100 900',
+});
 
 export default function RootLayout({
   children,
@@ -21,7 +22,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${inter.variable} ${specialElite.variable} ${ebGaramond.variable} font-sans bg-parchment dark:bg-navy-950`}
+        className={`${jetbrainsMono.className} bg-parchment dark:bg-navy-950`}
       >
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <div className="min-h-screen flex flex-col">
