@@ -5,18 +5,20 @@ import { useRouter } from "next/navigation"
 import { Lock } from "lucide-react"
 import type { FormEvent } from "react"
 import verifyPassword from "@/lib/password";
+import { useStateManager } from "@/lib/StateContext";
 
 export default function Home() {
 	const [password, setPassword] = useState("")
-	const [locked, setLocked] = useState(true)
 	const router = useRouter()
+	const { dispatch } = useStateManager()
 
 	const handleUnlock = (e: FormEvent) => {
 		e.preventDefault()
 		const verifyPwd = async () => {
-			if (await verifyPassword(password))
-				setLocked(false)
-
+			if (await verifyPassword(password)) {
+				dispatch({ type: "PASSWORD", payload: password })
+				router.push("/entries")
+			}
 		}
 		verifyPwd()
 	}
