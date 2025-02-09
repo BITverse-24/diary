@@ -16,8 +16,8 @@ export default function Home() {
 		e.preventDefault()
 		const verifyPwd = async () => {
 			if (await verifyPassword(password)) {
-				dispatch({ type: "PASSWORD", payload: password })
-				router.push("/entries")
+				dispatch({ type: "PASSWORD", payload: password });
+				router.push("/entries");
 			}
 		}
 		verifyPwd()

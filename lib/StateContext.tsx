@@ -1,9 +1,10 @@
 // context/StateContext.tsx
 import React, { createContext, useReducer, useContext } from "react";
-import stateReducer, { StateType } from "./StateManager";
+import stateReducer, { StateType, Entry } from "./StateManager";
 
 const initialState: StateType = {
-	password: "light",
+	password: "",
+	entries: []
 };
 
 const StateContext = createContext<{

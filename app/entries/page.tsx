@@ -2,16 +2,24 @@
 
 import Link from "next/link"
 import { PlusCircle } from "lucide-react"
-
-const entries = [
-	{ id: 1, title: "A day to remember", date: "2023-05-15", excerpt: "Today was filled with unexpected joys..." },
-	{ id: 2, title: "Reflections on change", date: "2023-05-10", excerpt: "As the seasons shift, so do my thoughts..." },
-	{ id: 3, title: "Dreams and aspirations", date: "2023-05-05", excerpt: "In the quiet of the night, I pondered..." },
-	{ id: 4, title: "Awkward", date: "2023-05-05", excerpt: "hehehehehehehehehehehehe..." },
-
-]
+import {useEffect, useState} from "react";
+import { useStateManager } from "@/lib/StateContext";
+import { get } from "@/lib/dynamodb"
 
 export default function Entries() {
+	const [entries, setEntries] = useState<{ name: string, content: string, date: string }[]>([]);
+	const { password } = useStateManager().state;
+	if (!password) return <div>Loading...</div>
+
+	useEffect(() => {
+		async function sync() {
+			setEntries(await get(password) ?? []);
+		}
+
+		sync();
+	}, [])
+
+
 	return (
 		<div className="w-full max-w-4xl">
 			<div className="flex justify-between items-center mb-8">
@@ -25,15 +33,15 @@ export default function Entries() {
 				</Link>
 			</div>
 			<div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-				{entries.map((entry) => (
+				{entries.map((entry, index) => (
 					<div
-						key={entry.id}
+						key={index}
 						className="bg-parchment-light dark:bg-navy-900 p-6 rounded-lg shadow-md border border-brown-300 dark:border-blue-800 hover:shadow-lg transition-shadow"
 					>
-						<h2 className="text-xl font-eb-garamond mb-2 text-brown-800 dark:text-blue-100">{entry.title}</h2>
+						<h2 className="text-xl font-eb-garamond mb-2 text-brown-800 dark:text-blue-100">{entry.name}</h2>
 						<p className="text-sm font-special-elite text-brown-600 dark:text-blue-300 mb-4">{entry.date}</p>
 						<Link
-							href={`/entries/${entry.id}`}
+							href={`/entries/${index}`}
 							className="text-brown-600 dark:text-blue-300 hover:text-brown-800 dark:hover:text-blue-100 font-special-elite"
 						>
 							View Entry

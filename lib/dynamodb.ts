@@ -1,7 +1,9 @@
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
-import { DynamoDBDocumentClient, PutCommand, GetCommand, QueryCommand } from "@aws-sdk/lib-dynamodb";
+import { DynamoDBDocumentClient, PutCommand, QueryCommand } from "@aws-sdk/lib-dynamodb";
+import "./password"
+import verifyPassword from "@/lib/password";
 
-const client = new DynamoDBClient({});
+const client = new DynamoDBClient();
 const docClient = DynamoDBDocumentClient.from(client);
 
 const TABLE_NAME = process.env.TABLE_NAME as string;
@@ -12,9 +14,9 @@ interface EntrySchema {
 	content: string;
 }
 
-
-export async function insert(name: string, content: string): Promise<boolean> {
+export async function insert(name: string, content: string, password: string): Promise<boolean> {
 	try {
+		if (!await verifyPassword(password)) return false;
 		const entry: EntrySchema = {
 			date: new Date().toISOString(),
 			content: content,
@@ -34,8 +36,9 @@ export async function insert(name: string, content: string): Promise<boolean> {
 }
 
 
-export async function get(): Promise<EntrySchema[] | null> {
+export async function get(password: string): Promise<EntrySchema[] | null> {
 	try {
+		if (!await verifyPassword(password)) return null;
 		const response = await docClient.send(new QueryCommand({
 			TableName: TABLE_NAME,
 			IndexName: "name"
