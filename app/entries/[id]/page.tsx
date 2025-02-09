@@ -30,7 +30,7 @@ export default function EntryPage({ params }: { params: { id: string } }) {
 
 			</button>
 			<article className="bg-parchment-light dark:bg-navy-900 p-8 rounded-lg shadow-md border border-brown-300 dark:border-blue-800">
-				<h1 className="text-4xl mb-4 text-brown-800 dark:text-blue-100">{entry.name}</h1>
+				<h1 className="text-4xl mb-4 text-brown-800 dark:text-blue-100">{entry.title}</h1>
 				<p className="text-base font-special-elite text-brown-600 dark:text-blue-300 mb-6">{entry.date}</p>
 				<hr className="my-6" />
 				<div className="prose dark:prose-invert prose-brown dark:prose-blue max-w-none">

@@ -5,7 +5,7 @@ export type StateType = {
 };
 
 export type Entry = {
-	name: string
+	title: string
 	date: string
 	content: string
 }

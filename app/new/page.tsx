@@ -3,19 +3,26 @@
 import { useState, FormEvent } from "react"
 import { useRouter } from "next/navigation"
 import { Bold, Italic, List, Heading } from "lucide-react"
+import { insert } from "@/lib/dynamodb"
+import { useStateManager } from "@/lib/StateContext";
+import { encryptData } from "@/lib/aes"
 
 export default function NewEntry() {
 	const [content, setContent] = useState("")
 	const router = useRouter();
+	const { password } = useStateManager().state;
 
 	const handleSubmit = (e: FormEvent) => {
 		e.preventDefault();
 
 		const title = content.split("\n")[0].trim()
-		const body = content.split("\n").slice(1).join("\n").trim();
-		console.log("Title:", title)
-		console.log("Body:", body)
-		router.push("/entries");
+		let body = content.split("\n").slice(1).join("\n").trim();
+		body = encryptData(Buffer.from(body, "utf-8"), password)
+
+		insert(title, body, password).then(res => {
+			if (!res) return alert("Unable to save entry :(");
+			router.push("/entries");
+		});
 	}
 
 	const insertMarkdown = (tag: string) => {

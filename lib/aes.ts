@@ -17,7 +17,7 @@ function deriveKey(password: string, salt: Buffer): Buffer {
 /**
  * Encrypts data using AES-GCM with a password-derived key.
  */
-function encryptData(data: Buffer, password: string): string {
+export function encryptData(data: Buffer, password: string): string {
 	const salt = crypto.randomBytes(SALT_LENGTH);
 	const key = deriveKey(password, salt);
 	const nonce = crypto.randomBytes(NONCE_LENGTH);
@@ -32,7 +32,7 @@ function encryptData(data: Buffer, password: string): string {
 /**
  * Decrypts an encrypted blob using AES-GCM.
  */
-function decryptData(encryptedBlob: string, password: string): Buffer {
+export function decryptData(encryptedBlob: string, password: string): Buffer {
 	const encryptedData = Buffer.from(encryptedBlob, "base64");
 
 	const salt = encryptedData.subarray(0, SALT_LENGTH);

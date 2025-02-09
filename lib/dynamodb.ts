@@ -1,26 +1,24 @@
+'use server'
+
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import { DynamoDBDocumentClient, PutCommand, QueryCommand } from "@aws-sdk/lib-dynamodb";
 import "./password"
 import verifyPassword from "@/lib/password";
+import type { Entry } from "@/lib/StateManager"
 
 const client = new DynamoDBClient();
 const docClient = DynamoDBDocumentClient.from(client);
 
 const TABLE_NAME = process.env.TABLE_NAME as string;
 
-interface EntrySchema {
-	date: string;
-	name: string;
-	content: string;
-}
-
-export async function insert(name: string, content: string, password: string): Promise<boolean> {
+export async function insert(title: string, content: string, password: string): Promise<boolean> {
 	try {
 		if (!await verifyPassword(password)) return false;
-		const entry: EntrySchema = {
+
+		const entry: Entry = {
 			date: new Date().toISOString(),
 			content: content,
-			name: name,
+			title: title,
 		};
 
 		await docClient.send(new PutCommand({
@@ -36,7 +34,7 @@ export async function insert(name: string, content: string, password: string): P
 }
 
 
-export async function get(password: string): Promise<EntrySchema[] | null> {
+export async function get(password: string): Promise<Entry[] | null> {
 	try {
 		if (!await verifyPassword(password)) return null;
 		const response = await docClient.send(new QueryCommand({
@@ -44,7 +42,7 @@ export async function get(password: string): Promise<EntrySchema[] | null> {
 			IndexName: "name"
 		}));
 
-		return response.Items as EntrySchema[] || [];
+		return response.Items as Entry[] || [];
 	} catch (error) {
 		console.error("DynamoDB Get Error:", error);
 		return null;
