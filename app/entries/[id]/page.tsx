@@ -6,14 +6,18 @@ import ReactMarkdown from "react-markdown"
 import { ArrowLeft } from "lucide-react"
 import { Entry } from "@/lib/StateManager"
 import { useStateManager } from "@/lib/StateContext";
+import { decryptData } from "@/lib/aes"
 
 export default function EntryPage({ params }: { params: { id: string } }) {
-	const [entry, setEntry] = useState<Entry>({} as Entry)
+	const [entry, setEntry] = useState<Entry>({} as Entry);
+	const [content, setContent] = useState("");
+
 	const router = useRouter();
 	const { state } = useStateManager();
 
 	useEffect(() => {
-		setEntry(state.entries[parseInt(params.id)])
+		setEntry(state.entries[parseInt(params.id)]);
+		setContent(decryptData(state.entries[parseInt(params.id)].content, state.password).toString("utf-8"))
 	}, []);
 
 	if (!entry) return <div>Loading...</div>
@@ -34,7 +38,7 @@ export default function EntryPage({ params }: { params: { id: string } }) {
 				<p className="text-base font-special-elite text-brown-600 dark:text-blue-300 mb-6">{entry.date}</p>
 				<hr className="my-6" />
 				<div className="prose dark:prose-invert prose-brown dark:prose-blue max-w-none">
-					<ReactMarkdown>{entry.content}</ReactMarkdown>
+					<ReactMarkdown>{content}</ReactMarkdown>
 				</div>
 			</article>
 		</div>
