@@ -7,7 +7,8 @@ import { useStateManager } from "@/lib/StateContext";
 import { get } from "@/lib/dynamodb"
 
 export default function Entries() {
-	const [entries, setEntries] = useState<{ name: string, content: string, date: string }[]>([]);
+	const [entries, setEntries] = useState<{ title: string, content: string, date: string }[]>([]);
+	console.log(useStateManager().state)
 	const { password } = useStateManager().state;
 	if (!password) return <div>Loading...</div>
 
@@ -38,7 +39,7 @@ export default function Entries() {
 						key={index}
 						className="bg-parchment-light dark:bg-navy-900 p-6 rounded-lg shadow-md border border-brown-300 dark:border-blue-800 hover:shadow-lg transition-shadow"
 					>
-						<h2 className="text-xl font-eb-garamond mb-2 text-brown-800 dark:text-blue-100">{entry.name}</h2>
+						<h2 className="text-xl font-eb-garamond mb-2 text-brown-800 dark:text-blue-100">{entry.title}</h2>
 						<p className="text-sm font-special-elite text-brown-600 dark:text-blue-300 mb-4">{entry.date}</p>
 						<Link
 							href={`/entries/${index}`}

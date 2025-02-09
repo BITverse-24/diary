@@ -1,4 +1,4 @@
-// context/StateContext.tsx
+'use client'
 import React, { createContext, useReducer, useContext } from "react";
 import stateReducer, { StateType, Entry } from "./StateManager";
 

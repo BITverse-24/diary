@@ -11,6 +11,7 @@ export default function NewEntry() {
 	const [content, setContent] = useState("")
 	const router = useRouter();
 	const { password } = useStateManager().state;
+	console.log(useStateManager().state)
 
 	const handleSubmit = (e: FormEvent) => {
 		e.preventDefault();
