@@ -9,12 +9,20 @@ import { get } from "@/lib/dynamodb"
 export default function Entries() {
 	const [entries, setEntries] = useState<{ title: string, content: string, date: string }[]>([]);
 	console.log(useStateManager().state)
-	const { password } = useStateManager().state;
+	const { state, dispatch } = useStateManager();
+	const { password } = state;
 	if (!password) return <div>Loading...</div>
 
 	useEffect(() => {
 		async function sync() {
-			setEntries(await get(password) ?? []);
+			const res = await get(password);
+			setEntries(res ?? []);
+			dispatch(
+				{
+					type: "ENTRY",
+					payload: res,
+				}
+			,)
 		}
 
 		sync();
