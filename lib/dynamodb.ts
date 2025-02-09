@@ -16,7 +16,7 @@ export async function insert(title: string, content: string, password: string): 
 		if (!await verifyPassword(password)) return false;
 		console.log('Password Verified')
 		const entry: Entry = {
-			date: new Date().toISOString(),
+			date: new Date().toLocaleString(),
 			content: content,
 			title: title,
 		};
