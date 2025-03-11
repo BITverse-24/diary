@@ -14,7 +14,7 @@ type ActionType =
 	| { type: "PASSWORD"; payload: string }
 	| { type: "ENTRY"; payload: Entry[] }
 
-const stateManager = (state: StateType, action: ActionType): StateType => {
+const StateManager = (state: StateType, action: ActionType): StateType => {
 	switch (action.type) {
 		case "PASSWORD":
 			return { ...state, password: action.payload };
@@ -25,4 +25,4 @@ const stateManager = (state: StateType, action: ActionType): StateType => {
 	}
 };
 
-export default stateManager;
+export default StateManager;
