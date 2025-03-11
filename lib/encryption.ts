@@ -63,7 +63,7 @@ export async function encryptData(text: string, password: string): Promise<strin
 	return encryptedBlob.toString('base64');
 }
 
-export async function decryptData(encryptedBlob: string, password: string): Promise<Buffer> {
+export async function decryptData(encryptedBlob: string, password: string): Promise<string> {
 	const encryptedData = Buffer.from(encryptedBlob, 'base64');
 
 	let offset = 0;
@@ -99,7 +99,7 @@ export async function decryptData(encryptedBlob: string, password: string): Prom
 
 	const dataDecipher = crypto.createDecipheriv(CIPHER_ALGORITHM, sessionKey, dataIv);
 	dataDecipher.setAuthTag(dataAuthTag);
-	return Buffer.concat([dataDecipher.update(dataCiphertext), dataDecipher.final()]);
+	return Buffer.concat([dataDecipher.update(dataCiphertext), dataDecipher.final()]).toString('utf-8');
 }
 
 async function testEncryption() {
@@ -109,7 +109,7 @@ async function testEncryption() {
 	console.log(`Encrypted: \n${encryptedText}\n\n`);
 
 	const decryptedText = await decryptData(encryptedText, password);
-	console.log(`Decrypted: ${decryptedText.toString("utf-8")}`);
+	console.log(`Decrypted: ${decryptedText}`);
 }
 
 if (require.main === module)

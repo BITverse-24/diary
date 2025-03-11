@@ -11,7 +11,6 @@ export default function NewEntry() {
 	const [content, setContent] = useState("")
 	const router = useRouter();
 	const { password } = useStateManager().state;
-	console.log(useStateManager().state)
 
 	const handleSubmit = (e: FormEvent) => {
 		e.preventDefault();
@@ -19,14 +18,12 @@ export default function NewEntry() {
 		const title = content.split("\n")[0].trim()
 		let body = content.split("\n").slice(1).join("\n").trim();
 		encryptData(body, password)
-			.then(data => {
-				console.log(data);
-				body = data;
-				insert(title, body, password)
+			.then(encrypted => {
+				insert(title, encrypted, password)
 					.then(res => {
-					if (!res) return alert("Unable to save entry :(");
-					router.push("/entries");
-				});
+						if (!res) return alert("Unable to save entry :(");
+						router.push("/entries");
+					});
 			})
 	}
 

@@ -6,8 +6,8 @@ import localFont from 'next/font/local';
 import { StateProvider } from "@/lib/StateContext";
 
 export const metadata = {
-	title: "Personal Diary",
-	description: "A nostalgic personal diary web application",
+	title: "Post Quantum Diary",
+	description: "A Post Quantum Diary meant for extra security",
 }
 
 const jetbrainsMono = localFont({

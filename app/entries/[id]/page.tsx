@@ -20,8 +20,11 @@ export default function EntryPage({ params }: { params: { id: string } }) {
 		if (!entry) return;
 
 		setCurrentEntry(entry);
-		const decryptedContent = decryptData(entry.content, state.password).toString("utf-8");
-		setContent(decryptedContent);
+		decryptData(entry.content, state.password)
+			.then((decryptedContent: string) => {
+				console.log(decryptedContent);
+				setContent(decryptedContent);
+			});
 	};
 
 	// Fetch entry data on mount

@@ -8,7 +8,6 @@ import { get } from "@/lib/dynamodb"
 
 export default function Entries() {
 	const [entries, setEntries] = useState<{ title: string, content: string, date: string }[]>([]);
-	console.log(useStateManager().state)
 	const { state, dispatch } = useStateManager();
 	const { password } = state;
 	if (!password) return <div>Loading...</div>
