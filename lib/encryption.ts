@@ -1,3 +1,5 @@
+'use server'
+
 import { MlKem768 } from 'crystals-kyber-js';
 import argon2 from 'argon2';
 import crypto from 'crypto';
@@ -23,14 +25,14 @@ async function deriveKey(password: string, salt: Buffer): Promise<Buffer> {
 	);
 }
 
-export async function encryptData(data: Buffer, password: string) {
+export async function encryptData(text: string, password: string): Promise<string> {
+	const data = Buffer.from(text, 'utf8');
 	const salt = crypto.randomBytes(SALT_LENGTH);
-
 	const seed = await deriveKey(password, salt);
 
-	if (seed.length !== 64) {
+	if (seed.length !== 64)
 		throw new Error(`Invalid seed length: ${seed.length}. Expected 64 bytes.`);
-	}
+
 
 	const mlkem = new MlKem768();
 	const [publicKey, privateKey] = await mlkem.deriveKeyPair(seed);
@@ -102,9 +104,8 @@ export async function decryptData(encryptedBlob: string, password: string): Prom
 
 async function testEncryption() {
 	const password = "StrongPassword123";
-	const plaintext = Buffer.from("My secret diary entry", "utf-8");
 
-	const encryptedText = await encryptData(plaintext, password);
+	const encryptedText = await encryptData("My secret diary entry", password);
 	console.log(`Encrypted: \n${encryptedText}\n\n`);
 
 	const decryptedText = await decryptData(encryptedText, password);

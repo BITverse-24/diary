@@ -5,7 +5,7 @@ import ReactMarkdown from "react-markdown";
 import { ArrowLeft } from "lucide-react";
 import { Entry } from "@/lib/StateManager";
 import { useStateManager } from "@/lib/StateContext";
-import { decryptData } from "@/lib/aes";
+import { decryptData } from "@/lib/encryption";
 
 export default function EntryPage({ params }: { params: { id: string } }) {
 	const [currentEntry, setCurrentEntry] = useState<Entry | null>(null);

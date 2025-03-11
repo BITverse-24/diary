@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation"
 import { Bold, Italic, List, Heading } from "lucide-react"
 import { insert } from "@/lib/dynamodb"
 import { useStateManager } from "@/lib/StateContext";
-import { encryptData } from "@/lib/aes"
+import { encryptData } from "@/lib/encryption"
 
 export default function NewEntry() {
 	const [content, setContent] = useState("")
@@ -18,12 +18,16 @@ export default function NewEntry() {
 
 		const title = content.split("\n")[0].trim()
 		let body = content.split("\n").slice(1).join("\n").trim();
-		body = encryptData(Buffer.from(body, "utf-8"), password)
-
-		insert(title, body, password).then(res => {
-			if (!res) return alert("Unable to save entry :(");
-			router.push("/entries");
-		});
+		encryptData(body, password)
+			.then(data => {
+				console.log(data);
+				body = data;
+				insert(title, body, password)
+					.then(res => {
+					if (!res) return alert("Unable to save entry :(");
+					router.push("/entries");
+				});
+			})
 	}
 
 	const insertMarkdown = (tag: string) => {
