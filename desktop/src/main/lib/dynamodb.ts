@@ -2,8 +2,8 @@
 
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import { DynamoDBDocumentClient, PutCommand, ScanCommand  } from "@aws-sdk/lib-dynamodb";
-import verifyPassword from "@/lib/password";
-import type { Entry } from "@/lib/StateManager"
+import verifyPassword from "./password";
+import type { Entry } from "./StateManager"
 
 const client = new DynamoDBClient();
 const docClient = DynamoDBDocumentClient.from(client);
@@ -13,7 +13,6 @@ const TABLE_NAME = process.env.TABLE_NAME as string;
 export async function insert(title: string, content: string, password: string): Promise<boolean> {
 	try {
 		if (!await verifyPassword(password)) return false;
-		console.log('Password Verified')
 		const entry: Entry = {
 			date: new Date().toLocaleString(),
 			content: content,
