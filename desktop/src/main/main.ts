@@ -9,8 +9,8 @@ let mainWindow: BrowserWindow | null = null;
 
 function createWindow() {
     mainWindow = new BrowserWindow({
-        width: 1200,
-        height: 800,
+        frame: false,
+        fullscreen: true,
         webPreferences: {
             nodeIntegration: false,
             contextIsolation: true,
@@ -18,6 +18,8 @@ function createWindow() {
             sandbox: true
         }
     });
+
+    mainWindow.setContentProtection(true);
 
     // Set security headers
     mainWindow.webContents.session.webRequest.onHeadersReceived((details, callback) => {
