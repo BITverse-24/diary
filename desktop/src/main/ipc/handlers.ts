@@ -2,7 +2,8 @@ import { ipcMain } from 'electron';
 import { IPC_CHANNELS, IpcHandleChannel } from './channels';
 import { logger } from '../lib/logger';
 import verifyPassword from "../lib/password";
-import { encrypt, decrypt } from '../utils/encryption';
+import { encryptData } from '../lib/encryption';
+import { insert } from '../lib/dynamodb';
 
 // Type for handler function
 type IpcHandler = (event: Electron.IpcMainInvokeEvent, ...args: any[]) => Promise<any>;
@@ -10,7 +11,7 @@ type IpcHandler = (event: Electron.IpcMainInvokeEvent, ...args: any[]) => Promis
 // Map of channel names to their handler functions
 const handlers: Record<IpcHandleChannel, IpcHandler> = {
     // Auth handlers
-    [IPC_CHANNELS.AUTH.LOGIN]: async (event: any, password: string) => {
+    [IPC_CHANNELS.AUTH.LOGIN]: async (event: Electron.IpcMainInvokeEvent, password: string) => {
         try {
             logger.info('Login attempt', { password: password });
             return verifyPassword(password);
@@ -20,23 +21,24 @@ const handlers: Record<IpcHandleChannel, IpcHandler> = {
         }
     },
 
-    [IPC_CHANNELS.AUTH.REGISTER]: async (event, userData) => {
-        try {
-            logger.info('Registration attempt', { username: userData.username });
-            const result = await AuthService.register(userData);
-            return { success: true, ...result };
-        } catch (error) {
-            logger.error('Registration failed', { error });
-            throw error;
-        }
-    },
+    // [IPC_CHANNELS.AUTH.REGISTER]: async (event, userData) => {
+    //     try {
+    //         logger.info('Registration attempt', { username: userData.username });
+    //         const result = await AuthService.register(userData);
+    //         return { success: true, ...result };
+    //     } catch (error) {
+    //         logger.error('Registration failed', { error });
+    //         throw error;
+    //     }
+    // },
 
-    [IPC_CHANNELS.AUTH.VERIFY_TOKEN]: async (event, token) => {
+    [IPC_CHANNELS.DIARY.CREATE_ENTRY]: async (event: Electron.IpcMainInvokeEvent, data: { title: string, body: string, password: string }) => {
+        const { body, password, title } = data;
         try {
-            const isValid = await AuthService.verifyToken(token);
-            return { success: true, isValid };
+            const encrypted = await encryptData(body, password);
+            return await insert(title, encrypted, password);
         } catch (error) {
-            logger.error('Token verification failed', { error });
+            logger.error('Entry Creation failed', { error });
             throw error;
         }
     },
