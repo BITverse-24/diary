@@ -1,6 +1,6 @@
 import { ipcMain } from 'electron';
 import { IPC_CHANNELS, IpcEventChannel } from './channels';
-import { logger } from '../utils/logger';
+import { logger } from '../lib/logger';
 
 // Type for event handler function
 type IpcEventHandler = (event: Electron.IpcMainEvent, ...args: any[]) => void;

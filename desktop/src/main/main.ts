@@ -3,7 +3,7 @@ import * as path from 'path';
 import { setupIpcHandlers } from './ipc/handlers';
 import { setupIpcEvents } from './ipc/events';
 import { getCSPString } from './config/security';
-import { logger } from './utils/logger';
+import { logger } from './lib/logger';
 
 let mainWindow: BrowserWindow | null = null;
 

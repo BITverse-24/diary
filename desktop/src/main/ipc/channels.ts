@@ -3,15 +3,13 @@ export const IPC_CHANNELS = {
     AUTH: {
         LOGIN: 'auth:login',
         LOGOUT: 'auth:logout',
-        REGISTER: 'auth:register',
-        VERIFY_TOKEN: 'auth:verify-token'
+        REGISTER: 'auth:register'
     },
 
     // User management channels
     USER: {
-        GET_PROFILE: 'user:get-profile',
-        UPDATE_PROFILE: 'user:update-profile',
-        CHANGE_PASSWORD: 'user:change-password'
+        CHANGE_PASSWORD: 'user:change-password',
+        MIGRATE: 'user:migrate',
     },
 
     // Diary entries channels
@@ -19,7 +17,6 @@ export const IPC_CHANNELS = {
         CREATE_ENTRY: 'diary:create-entry',
         GET_ENTRIES: 'diary:get-entries',
         GET_ENTRY: 'diary:get-entry',
-        UPDATE_ENTRY: 'diary:update-entry',
         DELETE_ENTRY: 'diary:delete-entry'
     },
 
@@ -41,4 +38,4 @@ export type IpcEventChannel = Extract<IpcChannel,
 >;
 
 // Type for IPC handle names (channels that use ipcMain.handle)
-export type IpcHandleChannel = Exclude<IpcChannel, IpcEventChannel>; 
+export type IpcHandleChannel = Exclude<IpcChannel, IpcEventChannel>;

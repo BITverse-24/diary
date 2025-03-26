@@ -1,6 +1,6 @@
 import { ipcMain } from 'electron';
 import { IPC_CHANNELS, IpcHandleChannel } from './channels';
-import { logger } from '../utils/logger';
+import { logger } from '../lib/logger';
 
 // Type for handler function
 type IpcHandler = (event: Electron.IpcMainInvokeEvent, ...args: any[]) => Promise<any>;
@@ -26,17 +26,6 @@ const handlers: Record<IpcHandleChannel, IpcHandler> = {
             return { success: true };
         } catch (error) {
             logger.error('Registration failed', { error });
-            throw error;
-        }
-    },
-
-    // User handlers
-    [IPC_CHANNELS.USER.GET_PROFILE]: async () => {
-        try {
-            // Implement get profile logic here
-            return { success: true, profile: { name: 'Test User' } };
-        } catch (error) {
-            logger.error('Failed to get profile', { error });
             throw error;
         }
     },
