@@ -1,6 +1,9 @@
 import { app, BrowserWindow } from 'electron';
 import * as path from 'path';
 import { setupIpcHandlers } from './ipc/handlers';
+import { setupIpcEvents } from './ipc/events';
+import { getCSPString } from './config/security';
+import { logger } from './utils/logger';
 
 let mainWindow: BrowserWindow | null = null;
 
@@ -11,8 +14,23 @@ function createWindow() {
         webPreferences: {
             nodeIntegration: false,
             contextIsolation: true,
-            preload: path.join(__dirname, 'preload.js')
+            preload: path.join(__dirname, 'preload.js'),
+            sandbox: true
         }
+    });
+
+    // Set security headers
+    mainWindow.webContents.session.webRequest.onHeadersReceived((details, callback) => {
+        callback({
+            responseHeaders: {
+                ...details.responseHeaders,
+                'Content-Security-Policy': [getCSPString()],
+                'X-Content-Security-Policy': [getCSPString()],
+                'X-Frame-Options': ['DENY'],
+                'X-Content-Type-Options': ['nosniff'],
+                'Referrer-Policy': ['strict-origin-when-cross-origin']
+            }
+        });
     });
 
     // In development, load from localhost
@@ -27,21 +45,56 @@ function createWindow() {
     mainWindow.on('closed', () => {
         mainWindow = null;
     });
+
+    // Log window creation
+    logger.info('Main window created', {
+        width: 1200,
+        height: 800,
+        env: process.env.NODE_ENV
+    });
 }
 
-app.whenReady().then(() => {
-    createWindow();
-    setupIpcHandlers();
-});
+// Initialize the application
+async function initialize() {
+    try {
+        // Setup IPC handlers and events
+        setupIpcHandlers();
+        setupIpcEvents();
+
+        // Create the main window
+        createWindow();
+
+        // Log successful initialization
+        logger.info('Application initialized successfully');
+    } catch (error) {
+        logger.error('Failed to initialize application', { error });
+        app.quit();
+    }
+}
+
+// Handle application events
+app.whenReady().then(initialize);
 
 app.on('window-all-closed', () => {
     if (process.platform !== 'darwin') {
+        logger.info('All windows closed, quitting application');
         app.quit();
     }
 });
 
 app.on('activate', () => {
     if (mainWindow === null) {
+        logger.info('Activating application, creating new window');
         createWindow();
     }
-}); 
+});
+
+// Handle uncaught exceptions
+process.on('uncaughtException', (error) => {
+    logger.error('Uncaught exception', { error });
+    app.quit();
+});
+
+process.on('unhandledRejection', (reason, promise) => {
+    logger.error('Unhandled rejection', { reason, promise });
+});
