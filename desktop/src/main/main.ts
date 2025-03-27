@@ -1,6 +1,6 @@
 import { app, BrowserWindow } from 'electron';
 import * as path from 'path';
-// import { logger } from './lib/logger';
+import { logger } from '../lib/logger';
 import registerAllIPCHandlers from "./handler";
 
 let mainWindow: BrowserWindow | null = null;
@@ -44,12 +44,11 @@ function createWindow() {
         mainWindow = null;
     });
 
-    // Log window creation
-    // logger.info('Main window created', {
-    //     width: 1200,
-    //     height: 800,
-    //     env: process.env.NODE_ENV
-    // });
+    logger.info('Main window created', {
+        width: 1200,
+        height: 800,
+        env: process.env.NODE_ENV
+    });
 }
 
 async function initialize() {
@@ -57,10 +56,9 @@ async function initialize() {
         registerAllIPCHandlers();
         createWindow();
 
-        // Log successful initialization
-        //logger.info('Application initialized successfully');
+        logger.info('Application initialized successfully');
     } catch (error) {
-        //logger.error('Failed to initialize application', { error });
+        logger.error('Failed to initialize application', { error });
         app.quit();
     }
 }
@@ -70,24 +68,23 @@ app.whenReady().then(initialize);
 
 app.on('window-all-closed', () => {
     if (process.platform !== 'darwin') {
-        //logger.info('All windows closed, quitting application');
+        logger.info('All windows closed, quitting application');
         app.quit();
     }
 });
 
 app.on('activate', () => {
     if (mainWindow === null) {
-        //logger.info('Activating application, creating new window');
+        logger.info('Activating application, creating new window');
         createWindow();
     }
 });
 
-// Handle uncaught exceptions
 process.on('uncaughtException', (error) => {
-    //logger.error('Uncaught exception', { error });
+    logger.error('Uncaught exception', { error });
     app.quit();
 });
 
 process.on('unhandledRejection', (reason, promise) => {
-    //logger.error('Unhandled rejection', { reason, promise });
+    logger.error('Unhandled rejection', { reason, promise });
 });
