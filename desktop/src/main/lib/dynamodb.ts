@@ -1,7 +1,7 @@
 'use server'
 
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
-import { DynamoDBDocumentClient, PutCommand, ScanCommand  } from "@aws-sdk/lib-dynamodb";
+import { DynamoDBDocumentClient, PutCommand, ScanCommand, DeleteCommand } from "@aws-sdk/lib-dynamodb";
 import verifyPassword from "./password";
 import type { Entry } from "./StateManager"
 
@@ -31,7 +31,6 @@ export async function insert(title: string, content: string, password: string): 
 	}
 }
 
-
 export async function get(password: string): Promise<Entry[] | null> {
 	try {
 		if (!await verifyPassword(password)) return null;
@@ -39,9 +38,23 @@ export async function get(password: string): Promise<Entry[] | null> {
 			TableName: TABLE_NAME
 		}));
 
-		return response.Items as Entry[] || [];
+		return (response.Items as Entry[]) || [];
 	} catch (error) {
 		console.error("DynamoDB Get Error:", error);
 		return null;
+	}
+}
+
+export async function deleteEntry(title: string, password: string): Promise<boolean> {
+	try {
+		if (!await verifyPassword(password)) return false;
+		await docClient.send(new DeleteCommand({
+			TableName: TABLE_NAME,
+			Key: { title }
+		}));
+		return true;
+	} catch (error) {
+		console.error("DynamoDB Delete Error:", error);
+		return false;
 	}
 }
