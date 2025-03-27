@@ -7,7 +7,7 @@ let mainWindow: BrowserWindow | null = null;
 
 function createWindow() {
     mainWindow = new BrowserWindow({
-        frame: false,
+        // frame: false,
         fullscreen: true,
         webPreferences: {
             nodeIntegration: false,
