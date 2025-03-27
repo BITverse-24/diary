@@ -1,5 +1,4 @@
 import {ipcMain} from 'electron';
-import {encryptData} from '@/lib/encryption'
 import {get} from "@/lib/dynamodb"
 import StateManager from '@/lib/StateManager'
 
