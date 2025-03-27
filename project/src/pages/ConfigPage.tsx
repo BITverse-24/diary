@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
 import { useStateManager } from "../../lib/StateContext";
@@ -87,6 +87,7 @@ const ConfigPage = () => {
         {/* Form */}
         <form onSubmit={handleSubmit} className="space-y-6">
           {activeDb === 'mongodb' ? (
+          <>
             <div>
               <label className="block text-sm font-medium text-amber-400/80 mb-2">
                 Connection String
@@ -100,6 +101,10 @@ const ConfigPage = () => {
                 placeholder="mongodb://username:password@host:port/database"
               />
             </div>
+            <div className="bg-neutral-800 p-6 rounded-lg shadow-xl space-y-4">
+              <button className="hover:bg-neutral-600 transition-colors w-full bg-neutral-700 p-3 rounded text-amber-400 text-center">Guide to get connection string</button>
+            </div>
+          </>
           ) : (
             <>
               <div>
@@ -140,6 +145,9 @@ const ConfigPage = () => {
                   className="w-full bg-[#1a1a1a] border border-[#333333] rounded-lg px-4 py-3 text-amber-400 placeholder-amber-400/30 focus:outline-none focus:ring-2 focus:ring-amber-400/50 focus:border-transparent transition-all"
                   placeholder="e.g., us-east-1"
                 />
+              </div>
+              <div className="bg-neutral-800 p-6 rounded-lg shadow-xl space-y-4">
+                <button className="hover:bg-neutral-600 transition-colors w-full bg-neutral-700 p-3 rounded text-amber-400 text-center">Guide to get access keys</button>
               </div>
             </>
           )}

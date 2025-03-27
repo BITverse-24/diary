@@ -1,13 +1,14 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import { AuthProvider } from './context/AuthContext';
-import { DiaryProvider } from './context/DiaryContext';
+// import { AuthProvider } from './context/AuthContext';
+// import { DiaryProvider } from './context/DiaryContext';
 import LoginPage from './pages/LoginPage';
 import ListEntriesPage from './pages/ListEntriesPage';
 import ViewEntryPage from './pages/ViewEntryPage';
 import NewEntryPage from './pages/NewEntryPage';
 import ConfigPage from './pages/ConfigPage';
-import ProtectedRoute from './components/ProtectedRoute';
+// import ProtectedRoute from './components/ProtectedRoute';
+import InitialSetup from './pages/InitialSetup';
 
 function App() {
   return (
@@ -16,7 +17,14 @@ function App() {
         <Router>
           <div className="min-h-screen bg-[#1E1E1E] text-[#FFD700]">
             <Routes>
-              <Route path="/login" element={<LoginPage />} />
+              <Route 
+                path="/initialSetup"
+                element={<InitialSetup />}
+              />
+              <Route 
+                path="/login" 
+                element={<LoginPage />} 
+              />
               <Route 
                 path="/config"
                 element={
