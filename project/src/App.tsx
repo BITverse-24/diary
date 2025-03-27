@@ -6,6 +6,7 @@ import LoginPage from './pages/LoginPage';
 import ListEntriesPage from './pages/ListEntriesPage';
 import ViewEntryPage from './pages/ViewEntryPage';
 import NewEntryPage from './pages/NewEntryPage';
+import ConfigPage from './pages/ConfigPage';
 import ProtectedRoute from './components/ProtectedRoute';
 
 function App() {
@@ -16,6 +17,12 @@ function App() {
           <div className="min-h-screen bg-[#1E1E1E] text-[#FFD700]">
             <Routes>
               <Route path="/login" element={<LoginPage />} />
+              <Route 
+                path="/config"
+                element={
+                  <ConfigPage />
+                }
+              />
               <Route
                 path="/"
                 element={
