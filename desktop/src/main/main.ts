@@ -1,6 +1,6 @@
 import { app, BrowserWindow } from 'electron';
 import * as path from 'path';
-import { logger } from '../lib/logger';
+import { logger } from '@/lib/logger';
 import registerAllIPCHandlers from "./handler";
 
 let mainWindow: BrowserWindow | null = null;
@@ -19,7 +19,6 @@ function createWindow() {
 
     mainWindow.setContentProtection(true);
 
-    // Set security headers
     mainWindow.webContents.session.webRequest.onHeadersReceived((details, callback) => {
         callback({
             responseHeaders: {
@@ -31,12 +30,10 @@ function createWindow() {
         });
     });
 
-    // In development, load from localhost
     if (process.env.NODE_ENV === 'development') {
         mainWindow.loadURL('http://localhost:3000');
         mainWindow.webContents.openDevTools();
     } else {
-        // In production, load the built files
         mainWindow.loadFile(path.join(__dirname, '../renderer/index.html'));
     }
 
@@ -63,7 +60,6 @@ async function initialize() {
     }
 }
 
-// Handle application events
 app.whenReady().then(initialize);
 
 app.on('window-all-closed', () => {
