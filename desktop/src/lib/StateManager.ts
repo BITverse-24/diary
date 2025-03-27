@@ -89,4 +89,8 @@ export class StateManager {
 	}
 }
 
-export default StateManager;
+export default new StateManager({
+	password: '',
+	entries: [],
+	dbConfig: undefined,
+});
