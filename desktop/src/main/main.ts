@@ -1,13 +1,14 @@
 import { app, BrowserWindow } from 'electron';
 import * as path from 'path';
-import { logger } from '@/lib/logger';
+import { logger } from '../lib/logger';
 import registerAllIPCHandlers from "./handler";
+import CopyPrevention from "../lib/CopyPrevention";
 
 let mainWindow: BrowserWindow | null = null;
 
 function createWindow() {
     mainWindow = new BrowserWindow({
-        // frame: false,
+        frame: false,
         fullscreen: true,
         webPreferences: {
             nodeIntegration: false,
@@ -18,6 +19,9 @@ function createWindow() {
     });
 
     mainWindow.setContentProtection(true);
+    CopyPrevention.disableCopy(mainWindow);
+    CopyPrevention.addCopyDeterrent(mainWindow);
+    CopyPrevention.enableCopyAttemptLogging(mainWindow);
 
     mainWindow.webContents.session.webRequest.onHeadersReceived((details, callback) => {
         callback({
@@ -30,12 +34,7 @@ function createWindow() {
         });
     });
 
-    if (process.env.NODE_ENV === 'development') {
-        mainWindow.loadURL('http://localhost:3000');
-        mainWindow.webContents.openDevTools();
-    } else {
-        mainWindow.loadFile(path.join(__dirname, '../renderer/index.html'));
-    }
+    mainWindow.loadURL('http://localhost:3000');
 
     mainWindow.on('closed', () => {
         mainWindow = null;
@@ -50,7 +49,7 @@ function createWindow() {
 
 async function initialize() {
     try {
-        registerAllIPCHandlers();
+        // registerAllIPCHandlers();
         createWindow();
 
         logger.info('Application initialized successfully');

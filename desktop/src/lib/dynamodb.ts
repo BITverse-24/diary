@@ -1,7 +1,7 @@
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import { DynamoDBDocumentClient, PutCommand, ScanCommand  } from "@aws-sdk/lib-dynamodb";
-import verifyPassword from "@/lib/password";
-import type { Entry } from "@/lib/StateManager"
+import verifyPassword from "./password";
+import type { Entry } from "./StateManager"
 
 const client = new DynamoDBClient();
 const docClient = DynamoDBDocumentClient.from(client);
