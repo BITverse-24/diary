@@ -1,15 +1,5 @@
 import React, { useEffect, useState } from 'react';
 
-// Declare the window interface to include our API
-declare global {
-    interface Window {
-        api: {
-            send: (channel: string, data: any) => void;
-            receive: (channel: string, func: Function) => void;
-        };
-    }
-}
-
 const App: React.FC = () => {
     const [message, setMessage] = useState<string>('');
 
