@@ -1,6 +1,7 @@
 import { app, BrowserWindow } from 'electron';
 import * as path from 'path';
 // import { logger } from './lib/logger';
+import registerAllIPCHandlers from "./handler";
 
 let mainWindow: BrowserWindow | null = null;
 
@@ -18,19 +19,17 @@ function createWindow() {
 
     mainWindow.setContentProtection(true);
 
-    // // Set security headers
-    // mainWindow.webContents.session.webRequest.onHeadersReceived((details, callback) => {
-    //     callback({
-    //         responseHeaders: {
-    //             ...details.responseHeaders,
-    //             'Content-Security-Policy': [getCSPString()],
-    //             'X-Content-Security-Policy': [getCSPString()],
-    //             'X-Frame-Options': ['DENY'],
-    //             'X-Content-Type-Options': ['nosniff'],
-    //             'Referrer-Policy': ['strict-origin-when-cross-origin']
-    //         }
-    //     });
-    // });
+    // Set security headers
+    mainWindow.webContents.session.webRequest.onHeadersReceived((details, callback) => {
+        callback({
+            responseHeaders: {
+                ...details.responseHeaders,
+                'X-Frame-Options': ['DENY'],
+                'X-Content-Type-Options': ['nosniff'],
+                'Referrer-Policy': ['strict-origin-when-cross-origin']
+            }
+        });
+    });
 
     // In development, load from localhost
     if (process.env.NODE_ENV === 'development') {
@@ -53,12 +52,9 @@ function createWindow() {
     // });
 }
 
-// Initialize the application
 async function initialize() {
     try {
-        // Setup IPC handlers and events
-
-        // Create the main window
+        registerAllIPCHandlers();
         createWindow();
 
         // Log successful initialization
