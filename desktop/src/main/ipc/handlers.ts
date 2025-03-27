@@ -43,17 +43,6 @@ const handlers: Record<IpcHandleChannel, IpcHandler> = {
         }
     },
 
-    // User handlers
-    [IPC_CHANNELS.USER.GET_PROFILE]: async (event) => {
-        try {
-            const profile = await UserService.getProfile();
-            return { success: true, profile };
-        } catch (error) {
-            logger.error('Failed to get profile', { error });
-            throw error;
-        }
-    },
-
     [IPC_CHANNELS.USER.UPDATE_PROFILE]: async (event, profileData) => {
         try {
             const updatedProfile = await UserService.updateProfile(profileData);
@@ -74,23 +63,8 @@ const handlers: Record<IpcHandleChannel, IpcHandler> = {
         }
     },
 
-    // Diary handlers
-    [IPC_CHANNELS.DIARY.CREATE_ENTRY]: async (event, entry) => {
-        try {
-            // Encrypt sensitive data before storing
-            const encryptedContent = encrypt(entry.content);
-            const result = await DiaryService.createEntry({
-                ...entry,
-                content: encryptedContent
-            });
-            return { success: true, entryId: result.id };
-        } catch (error) {
-            logger.error('Failed to create diary entry', { error });
-            throw error;
-        }
-    },
 
-    [IPC_CHANNELS.DIARY.GET_ENTRIES]: async (event, filters) => {
+    [IPC_CHANNELS.DIARY.GET_ENTRIES]: async (event: Electron.IpcMainInvokeEvent) => {
         try {
             const entries = await DiaryService.getEntries(filters);
             // Decrypt content for each entry
