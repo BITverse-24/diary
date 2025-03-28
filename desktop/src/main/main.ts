@@ -1,10 +1,12 @@
-import { app, BrowserWindow } from 'electron';
+import { app, BrowserWindow, globalShortcut, powerMonitor } from 'electron';
 import * as path from 'path';
 import { logger } from '../lib/logger';
 import registerAllIPCHandlers from "./handler";
 import CopyPrevention from "../lib/CopyPrevention";
 
 let mainWindow: BrowserWindow | null = null;
+const inactivityTimeoutSeconds = 300;
+
 
 function createWindow() {
     mainWindow = new BrowserWindow({
@@ -22,6 +24,22 @@ function createWindow() {
     CopyPrevention.disableCopy(mainWindow);
     CopyPrevention.addCopyDeterrent(mainWindow);
     CopyPrevention.enableCopyAttemptLogging(mainWindow);
+
+    globalShortcut.register('Ctrl+Shift+L', () => {
+        if (mainWindow) {
+            mainWindow.hide();
+        }
+        console.log('Lock hotkey pressed: UI locked.');
+    });
+
+    setInterval(() => {
+        const idleTime = powerMonitor.getSystemIdleTime();
+        if (idleTime >= inactivityTimeoutSeconds && mainWindow && mainWindow.isVisible()) {
+            mainWindow.hide();
+            mainWindow.minimize();
+            console.log('Inactivity detected: UI locked and minimized.');
+        }
+    }, 1000);
 
     mainWindow.webContents.session.webRequest.onHeadersReceived((details, callback) => {
         callback({
